@@ -5,7 +5,8 @@ import logger from "redux-logger";
 
 const appReducer = combineReducers({
     counter,
-    todo
+    todo,
+    services,
 })
 
 //CounterReducers 
@@ -50,8 +51,18 @@ function todo(state=[], action) {
     }
 }
 
+function services(state,action){
+    return [
+        { name: "Counter", path: "/services/counter" },
+        { name: "Todo", path: "/services/todo" },
+        {name: "Fetch", path: "/services/fetch"}
+    ];
+}
 
 
+function getData(state=[] , action){
+   
+}
 
 
 const store = createStore(appReducer, applyMiddleware(logger));

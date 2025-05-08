@@ -1,9 +1,9 @@
 import { useSelector, useDispatch } from "react-redux"
-
+import { increment,decrement } from "../redux-toolkit/counterReducer"
 
 
 export const Counter = () => {
-  const count = useSelector((state) => state.counter.count)
+  const count = useSelector((state) => state.value)
   const dispatch = useDispatch()
 
    
@@ -16,13 +16,13 @@ export const Counter = () => {
   
           <div className="flex justify-center space-x-4">
             <button
-              onClick={() => dispatch({ type: "INC" })}
+              onClick={() => dispatch(increment())}
               className="px-6 py-3 bg-blue-500 text-white text-lg font-semibold rounded-md hover:bg-blue-600 transition"
             >
               +
             </button>
             <button
-              onClick={() => dispatch({ type: "DEC" })}
+              onClick={() => dispatch(decrement())}
               className="px-6 py-3 bg-red-500 text-white text-lg font-semibold rounded-md hover:bg-red-600 transition"
             >
               -

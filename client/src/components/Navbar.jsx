@@ -1,35 +1,157 @@
-import { Link } from "react-router";
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { Menu, X } from 'lucide-react';
+import { resetUser } from '../redux-toolkit/userReducer';
 
 export const Navbar = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const token = localStorage.getItem('token');
+  const isAuthenticated = !!token;
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    dispatch(resetUser());
+    navigate('/login');
+    setIsOpen(false);
+  };
+
   return (
-    <>
-      {/* <!-- Navbar Component --> */}
-      <nav className="bg-indigo-600 border-b border-indigo-700 px-4 py-3">
-        <div className="flex flex-wrap items-center justify-between max-w-screen-xl mx-auto">
-          {/* <!-- Logo --> */}
-          <a href="/" className="flex items-center">
-            <span className="self-center text-xl font-semibold whitespace-nowrap text-white">🔯Redux</span>
-          </a>
-
-          {/* <!-- Mobile menu button --> */}
-          <button data-collapse-toggle="navbar-default" type="button" className="inline-flex items-center p-2 w-10 h-10 justify-center text-indigo-100 md:hidden hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-300" aria-controls="navbar-default" aria-expanded="false">
-            <span className="sr-only">Open main menu</span>
-            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-              <path fillRule="evenodd" d="M3 5h14M3 10h14M3 15h14" clipRule="evenodd" />
-            </svg>
-          </button>
-
-          {/* <!-- Nav Links --> */}
-          <div className="hidden w-full md:flex md:w-auto md:items-center md:justify-center md:flex-1" id="navbar-default">
-            <ul className="flex flex-col mt-4 md:flex-row md:space-x-8 md:mt-0 text-sm font-medium">
-              <li><Link to="/" className="block py-2 pl-3 pr-4 text-indigo-100 hover:text-white md:p-0 transition-colors duration-200">Home</Link></li>
-              <li><Link to="/services" className="block py-2 pl-3 pr-4 text-indigo-100 hover:text-white md:p-0 transition-colors duration-200">Services</Link></li>
-              <li><Link to="/about" className="block py-2 pl-3 pr-4 text-indigo-100 hover:text-white md:p-0 transition-colors duration-200">About</Link></li>
-              <li><Link to="/contact" className="block py-2 pl-3 pr-4 text-indigo-100 hover:text-white md:p-0 transition-colors duration-200">Contact</Link></li>
-            </ul>
+    <nav className="bg-gray-800">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          <div className="flex items-center">
+            <div className="flex-shrink-0">
+              <Link to="/" className="text-white font-bold text-xl">
+                MyApp
+              </Link>
+            </div>
+            
+            {/* Desktop menu */}
+            <div className="hidden md:block">
+              <div className="ml-10 flex items-baseline space-x-4">
+                {isAuthenticated && (
+                  <>
+                    <Link to="/" className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
+                      Home
+                    </Link>
+                    <Link to="/services" className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
+                      Services
+                    </Link>
+                    <Link to="/about" className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
+                      About
+                    </Link>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+          
+          {/* Auth buttons (desktop) */}
+          <div className="hidden md:block">
+            <div className="ml-4 flex items-center md:ml-6">
+              {isAuthenticated ? (
+                <button
+                  onClick={handleLogout}
+                  className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                >
+                  Logout
+                </button>
+              ) : (
+                <div className="flex space-x-4">
+                  <Link to="/login" className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
+                    Login
+                  </Link>
+                  <Link to="/signup" className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-md text-sm font-medium">
+                    Sign up
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
+          
+          {/* Mobile menu button */}
+          <div className="md:hidden">
+            <button
+              onClick={toggleMenu}
+              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none"
+            >
+              <span className="sr-only">Open main menu</span>
+              {isOpen ? (
+                <X className="block h-6 w-6" aria-hidden="true" />
+              ) : (
+                <Menu className="block h-6 w-6" aria-hidden="true" />
+              )}
+            </button>
           </div>
         </div>
-      </nav>
-    </>
+      </div>
+
+      {/* Mobile menu */}
+      {isOpen && (
+        <div className="md:hidden">
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+            {isAuthenticated && (
+              <>
+                <Link 
+                  to="/" 
+                  className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Home
+                </Link>
+                <Link 
+                  to="/services" 
+                  className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Services
+                </Link>
+                <Link 
+                  to="/about" 
+                  className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+                  onClick={() => setIsOpen(false)}
+                >
+                  About
+                </Link>
+              </>
+            )}
+            
+            {/* Auth buttons (mobile) */}
+            {isAuthenticated ? (
+              <button
+                onClick={handleLogout}
+                className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium w-full text-left"
+              >
+                Logout
+              </button>
+            ) : (
+              <>
+                <Link 
+                  to="/login" 
+                  className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Login
+                </Link>
+                <Link 
+                  to="/signup" 
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white block px-3 py-2 rounded-md text-base font-medium"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Sign up
+                </Link>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+    </nav>
   );
-};
+}

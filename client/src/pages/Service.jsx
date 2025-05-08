@@ -1,12 +1,9 @@
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 const Service = () => {
-  const services = [
-    { name: "Counter", path: "/services/counter" },
-    { name: "Todo", path: "/services/todo" },
-    // Add more services as needed
-  ];
-
+  const services = useSelector((state) => state.services)
+  
   return (
     <div className="min-h-screen py-10 px-4">
       <div className="max-w-6xl mx-auto">

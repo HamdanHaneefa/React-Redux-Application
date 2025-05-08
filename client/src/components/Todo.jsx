@@ -1,20 +1,20 @@
 import { useState } from 'react';
 import { X, ChevronDown } from 'lucide-react';
 import { useSelector, useDispatch } from "react-redux"
+import { enter,toggle,remove,clearCompleted,markCompleted,unmarkAll} from '../redux-toolkit/todoReducer';
+
 
 const Todo = () => {
-  const todos = useSelector((state) => state.todo)
+  const todos = useSelector((state) => state.todos)
   const dispatch = useDispatch()
   const [inputValue, setInputValue] = useState('');
   const [allCompleted, setAllCompleted] = useState(false);
-
-  // Placeholder for remaining todo count
   const remainingCount = todos.filter(todo => !todo.completed).length;
 
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && inputValue.trim()) {
-      dispatch({type:"ENTER",payload: inputValue})
+      dispatch(enter(inputValue))
       setInputValue('');
     }
 
@@ -48,7 +48,7 @@ const Todo = () => {
                     checked={todo.completed}
                     readOnly
                     className="w-5 h-5 cursor-pointer"
-                    onChange={() => dispatch({type:"TOGGLE",payload: todo.id})}
+                    onChange={() => dispatch(toggle(todo.id))}
                   />
                 </div>
                 <div className={`flex-grow ${todo.completed ? 'line-through text-gray-400' : 'text-gray-700'}`}>
@@ -57,7 +57,7 @@ const Todo = () => {
                 <div className="flex items-center">
                   <button 
                   className="text-gray-400 hover:text-gray-600"
-                  onClick={() => dispatch({type:"REMOVE",payload: todo.id})}
+                  onClick={() => dispatch(remove(todo.id))}
                   >
                     <X size={16} />
                   </button>
@@ -77,17 +77,16 @@ const Todo = () => {
             <div className="mt-4 flex space-x-4">
             
               <button className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition text-sm w-full"
-              onClick={() => dispatch({type:"CLEAR_COMPLETED"}) }>
+              onClick={() => dispatch(clearCompleted()) }>
                Clear Completed
               </button>
 
               <button className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition text-sm w-full"
-               onClick={() => { allCompleted ? dispatch({ type: "UNMARK_ALL"}) : dispatch({ type: "MARK_COMPLETED"});
+               onClick={() => { allCompleted ? dispatch(unmarkAll()) : dispatch(markCompleted());
                 setAllCompleted(!allCompleted);
                 }} >
                  {allCompleted ? 'Unmark All' : 'Mark All Completed'}
               </button>
-
             </div>
           </div>
         </div>
