@@ -176,7 +176,6 @@ export default function AdminDashboard() {
             Authorization: `Bearer ${token}`,
           },  
         });
-        
         dispatch(getUsers(response.data.users));
         setAuthError(null);
       } catch (err) {

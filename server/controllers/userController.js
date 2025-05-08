@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import User from '../models/userModel.js';
 import jwt from 'jsonwebtoken'; 
+import { updateUser } from './adminController.js';
 
 
 
@@ -123,10 +124,9 @@ export const dashboard = async(req,res) => {
 
 export const editProfile = async (req, res) => {
   try {
-    // const { id, name, email, phoneNumber,profileImage } = req.body;
-    // console.log(id, name, email, phoneNumber,profileImage)
-    console.log(req.body);
-    return 0
+    const { id, name, email, phoneNumber } = req.body;
+    const profileImage = req.file ? req.file.path : null;
+  
 
     if (!id) {
       return res.status(400).json({ error: 'User ID is required' });
@@ -155,23 +155,20 @@ export const editProfile = async (req, res) => {
     }
 
 
-    const updatedUser = await User.findByIdAndUpdate(
-      id,
-      {
-        $set: {
-          ...(name && { name }),
-          ...(email && { email }),
-          ...(phoneNumber && { phoneNumber }) 
-        }
-      },
-      { new: true }
-    );
+    const updatedFields = {
+      ...(name && { name }),
+      ...(email && { email }),
+      ...(phoneNumber && { phoneNumber }),
+      ...(profileImage && { profileImage }),
+    };
+
+    const updatedUser = await User.findByIdAndUpdate(id, { $set: updatedFields }, { new: true });
 
     if (!updatedUser) {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    res.status(200).json({ message: 'Profile updated successfully' });
+    res.status(200).json({ message: 'Profile updated successfully', user: updatedUser });
 
   } catch (error) {
     console.error('Error updating profile:', error);

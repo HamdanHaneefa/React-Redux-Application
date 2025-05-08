@@ -14,7 +14,7 @@ export default function UserDashboard() {
   const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
   const [errors, setErrors] = useState({});
   
-  const { name, email, phoneNumber, id } = useSelector((state) => state.user.currentUser);
+  const { name, email, phoneNumber, id ,profileImage} = useSelector((state) => state.user.currentUser);
  
   const [userProfile, setUserProfile] = useState({
     name: name || '',
@@ -37,6 +37,7 @@ export default function UserDashboard() {
   // Verify JWT token on component mount
   useEffect(() => {
     const verifyToken = async () => {
+      console.log(profileImage)
       const token = localStorage.getItem('token');
       
       if (!token) {
@@ -63,7 +64,7 @@ export default function UserDashboard() {
             Authorization: `Bearer ${token}`,
           },  
         });
-
+      
         dispatch(setUsers(response.data));    
         setAuthError(null);
       } catch (err) {
@@ -86,6 +87,7 @@ export default function UserDashboard() {
       name: name || prev.name,
       email: email || prev.email,
       phoneNumber: phoneNumber || prev.phoneNumber,
+      profileImage: profileImage || prev.profileImage,
       id: id || prev.id
     }));
     
@@ -293,10 +295,14 @@ export default function UserDashboard() {
             <div className="relative">
               {userProfile.profileImage ? (
                 <img
-                  src={userProfile.profileImage}
-                  alt="Profile"
-                  className="h-32 w-32 rounded-full object-cover border-2 border-indigo-500"
-                />
+                src={
+                  userProfile.profileImage?.startsWith('blob:')
+                    ? userProfile.profileImage
+                    : `http://localhost:3000/${userProfile.profileImage}`
+                }
+                alt="Profile"
+                className="h-32 w-32 rounded-full object-cover border-2 border-indigo-500"
+              />
               ) : (
                 <div className="h-32 w-32 rounded-full bg-gray-700 flex items-center justify-center text-gray-400 border-2 border-gray-600">
                   <User size={64} />

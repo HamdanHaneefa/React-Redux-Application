@@ -24,6 +24,10 @@
     phoneNumber: {
       type:String,
       required: false
+    },
+    profileImage: {
+      type: String,
+      required: false 
     }
   }, { timestamps: true });
 

@@ -16,13 +16,15 @@ const userSlice = createSlice({
     initialState,
     reducers: {
         setUsers: (state, action) => {
-            const { name, email, isAdmin, phoneNumber, _id } = action.payload;
+            const { name, email, isAdmin, phoneNumber, _id,profileImage } = action.payload;
+            console.log(profileImage)
             state.currentUser = {
                 name: name || state.currentUser.name,
                 email: email || state.currentUser.email,
                 isAdmin: isAdmin || state.currentUser.isAdmin,
                 phoneNumber: phoneNumber || state.currentUser.phoneNumber,
-                id: _id || state.currentUser.id
+                id: _id || state.currentUser.id,
+                profileImage: profileImage || state.currentUser.profileImage
             };
         },
         updatePhoneNumber: (state, action) => {

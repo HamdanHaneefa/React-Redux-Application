@@ -5,7 +5,6 @@ import connectDB from './config/db.js';
 import userRouter from './routes/userRoutes.js';
 import adminRouter from './routes/adminRoutes.js';
 import cors from 'cors';
-
 const PORT = process.env.PORT;
 const app = express();
 
@@ -23,6 +22,7 @@ app.use(cors({
 // Body parsing middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use('/uploads', express.static('uploads'));
 
 // Routes
 app.use('/admin', adminRouter);
